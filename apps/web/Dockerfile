@@ -32,6 +32,9 @@ COPY . .
 # Disable telemetry during build
 ENV NEXT_TELEMETRY_DISABLED=1
 
+ARG NEXT_PUBLIC_SERVER_URL
+ENV NEXT_PUBLIC_SERVER_URL=${NEXT_PUBLIC_SERVER_URL}
+
 RUN bun run --filter web build
 
 # Production image, copy all the files and run next
@@ -42,6 +45,9 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+
+ARG NEXT_PUBLIC_SERVER_URL
+ENV NEXT_PUBLIC_SERVER_URL=${NEXT_PUBLIC_SERVER_URL}
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
