@@ -13,6 +13,8 @@ export const env = createEnv({
     JWT_SECRET: z.string().min(32),
     /** JWT expiry duration string (e.g. '7d', '24h'). Defaults to 7 days. */
     JWT_EXPIRES_IN: z.string().default("7d"),
+    /** Optional domain to set on the auth cookie to share it across subdomains */
+    COOKIE_DOMAIN: z.string().optional(),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

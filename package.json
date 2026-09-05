@@ -19,8 +19,8 @@
   },
   "type": "module",
   "scripts": {
-    "dev": "turbo dev",
-    "build": "turbo build",
+    "dev": "node api.js && turbo dev",
+    "build": "node api.js && turbo build",
     "check-types": "turbo check-types",
     "dev:web": "turbo -F web dev",
     "dev:server": "turbo -F server dev",

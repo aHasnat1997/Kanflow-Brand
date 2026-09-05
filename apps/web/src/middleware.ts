@@ -39,7 +39,13 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
       },
     });
     isAuthenticated = meResponse.ok;
-  } catch {
+    
+    if (!isAuthenticated) {
+      console.error(`[Middleware Auth Failed] Status: ${meResponse.status}`);
+      console.error(`[Middleware Auth Failed] Response: ${await meResponse.text().catch(() => "could not read body")}`);
+    }
+  } catch (error) {
+    console.error(`[Middleware Auth Error] Fetch to ${serverUrl}/auth/me failed:`, error);
     isAuthenticated = false;
   }
 
