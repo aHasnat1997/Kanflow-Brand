@@ -1,0 +1,57 @@
+{
+  "name": "Kanflow-Brand",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ],
+    "catalog": {
+      "dotenv": "^17.4.2",
+      "zod": "^4.4.3",
+      "@types/bun": "^1.4.0",
+      "vitest": "4.1.8",
+      "@vitest/ui": "4.1.8",
+      "@vitest/coverage-v8": "4.1.8",
+      "jsdom": "^29.1.1",
+      "@prisma/client": "^7.9.1"
+    }
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "check-types": "turbo check-types",
+    "dev:web": "turbo -F web dev",
+    "dev:server": "turbo -F server dev",
+    "db:push": "turbo -F @Kanflow-Brand/db db:push",
+    "db:studio": "turbo -F @Kanflow-Brand/db db:studio",
+    "db:generate": "turbo -F @Kanflow-Brand/db db:generate",
+    "db:migrate": "turbo -F @Kanflow-Brand/db db:migrate",
+    "db:start": "turbo -F @Kanflow-Brand/db db:start",
+    "db:watch": "turbo -F @Kanflow-Brand/db db:watch",
+    "db:stop": "turbo -F @Kanflow-Brand/db db:stop",
+    "db:down": "turbo -F @Kanflow-Brand/db db:down",
+    "test": "bun run --filter web test && bun run --filter server test",
+    "lint:eslint": "eslint .",
+    "format:prettier": "prettier --write .",
+    "format:prettier:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@Kanflow-Brand/env": "workspace:*",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@Kanflow-Brand/config": "workspace:*",
+    "@eslint/js": "^10.0.1",
+    "@types/bun": "catalog:",
+    "eslint": "^10.9.0",
+    "globals": "^17.11.0",
+    "prettier": "^3.9.6",
+    "turbo": "2.10.11",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.67.0"
+  },
+  "packageManager": "bun@1.3.14"
+}
