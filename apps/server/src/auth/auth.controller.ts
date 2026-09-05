@@ -63,6 +63,7 @@ export class AuthController {
       sameSite: "lax",
       maxAge: COOKIE_MAX_AGE_SECONDS * 1000,
       path: "/",
+      ...(env.COOKIE_DOMAIN ? { domain: env.COOKIE_DOMAIN } : {}),
     });
 
     return { user };
@@ -82,6 +83,7 @@ export class AuthController {
       sameSite: "lax",
       maxAge: 0,
       path: "/",
+      ...(env.COOKIE_DOMAIN ? { domain: env.COOKIE_DOMAIN } : {}),
     });
   }
 
