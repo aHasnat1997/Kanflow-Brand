@@ -10,7 +10,7 @@ const workspaceRoot = resolve(appDir, "../..");
 const turbopackRoot = existsSync(join(workspaceRoot, "packages")) ? workspaceRoot : appDir;
 
 const nextConfig: NextConfig = {
-  typedRoutes: true,
+  typedRoutes: false,
   reactCompiler: true,
   turbopack: {
     root: turbopackRoot,

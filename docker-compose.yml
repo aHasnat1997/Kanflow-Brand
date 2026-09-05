@@ -1,33 +1,19 @@
 # Docker Compose for Kanflow-Brand
-# Full-stack container orchestration
 
-name: Kanflow-Brand
+name: kanflow-brand
 
 services:
-  web:
-    build:
-      context: ./apps/web
-      dockerfile: Dockerfile
-    container_name: Kanflow-Brand-web
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-    restart: unless-stopped
-    networks:
-      - Kanflow-Brand-network
-
   db:
     image: postgres:16-alpine
-    container_name: Kanflow-Brand-postgres
+    container_name: kanflow-postgres
     environment:
-      POSTGRES_DB: Kanflow-Brand
+      POSTGRES_DB: kanflow
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
     volumes:
-      - Kanflow-Brand_postgres_data:/var/lib/postgresql/data
+      - kanflow_postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -35,11 +21,48 @@ services:
       retries: 5
     restart: unless-stopped
     networks:
-      - Kanflow-Brand-network
+      - kanflow-network
+
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    container_name: kanflow-server
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:password@db:5432/kanflow
+      - CORS_ORIGIN=http://localhost:3000
+      - JWT_SECRET=${JWT_SECRET:-supersecretjwtkey12345678901234567890}
+      - JWT_EXPIRES_IN=7d
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - kanflow-network
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: kanflow-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SERVER_URL=http://localhost:5000
+      - INTERNAL_SERVER_URL=http://server:5000
+    depends_on:
+      - server
+    restart: unless-stopped
+    networks:
+      - kanflow-network
 
 networks:
-  Kanflow-Brand-network:
+  kanflow-network:
     driver: bridge
 
 volumes:
-  Kanflow-Brand_postgres_data:
+  kanflow_postgres_data:

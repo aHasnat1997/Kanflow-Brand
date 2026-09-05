@@ -1,10 +1,129 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated"
+  provider     = "prisma-client"
+  output       = "../generated"
   moduleFormat = "esm"
-  runtime = "bun"
+  runtime      = "bun"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Auth
+// ---------------------------------------------------------------------------
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  passwordHash String
+  name         String
+  createdAt      DateTime             @default(now())
+  boards         Board[]
+  memberships    BoardMember[]
+  accessRequests BoardAccessRequest[]
+  activityLogs   ActivityLog[]
+}
+
+// ---------------------------------------------------------------------------
+// Boards
+// ---------------------------------------------------------------------------
+
+model Board {
+  id                 String               @id @default(cuid())
+  name               String
+  owner              User                 @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId            String
+  shareToken         String?              @unique
+  linkSharingEnabled Boolean              @default(true)
+  createdAt          DateTime             @default(now())
+  members            BoardMember[]
+  columns            Column[]
+  accessRequests     BoardAccessRequest[]
+  activityLogs       ActivityLog[]
+}
+
+enum BoardRole {
+  OWNER
+  MEMBER
+  VIEWER
+}
+
+model BoardMember {
+  id      String    @id @default(cuid())
+  board   Board     @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId String
+  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  role    BoardRole
+
+  @@unique([boardId, userId])
+}
+
+enum AccessRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model BoardAccessRequest {
+  id        String              @id @default(cuid())
+  board     Board               @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId   String
+  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  status    AccessRequestStatus @default(PENDING)
+  createdAt DateTime            @default(now())
+
+  @@unique([boardId, userId])
+}
+
+model ActivityLog {
+  id         String   @id @default(cuid())
+  board      Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId    String
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId     String?
+  action     String
+  entityId   String?
+  entityType String?
+  details    Json?
+  createdAt  DateTime @default(now())
+
+  @@index([boardId, createdAt(sort: Desc)])
+}
+
+// ---------------------------------------------------------------------------
+// Columns
+// ---------------------------------------------------------------------------
+
+model Column {
+  id        String   @id @default(cuid())
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId   String
+  name      String
+  /// Float position for ordering. Managed by task-ordering.util.ts
+  position  Float
+  createdAt DateTime @default(now())
+  tasks     Task[]
+
+  @@index([boardId, position])
+}
+
+// ---------------------------------------------------------------------------
+// Tasks
+// ---------------------------------------------------------------------------
+
+model Task {
+  id          String   @id @default(cuid())
+  column      Column   @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  columnId    String
+  title       String
+  /// Optional longer description — nullable
+  description String?
+  /// Float position for ordering. Managed by task-ordering.util.ts
+  position    Float
+  createdAt   DateTime @default(now())
+
+  @@index([columnId, position])
 }

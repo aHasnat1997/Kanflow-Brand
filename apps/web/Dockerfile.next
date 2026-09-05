@@ -4,7 +4,7 @@ WORKDIR /app
 FROM base AS builder
 COPY . .
 RUN if [ -f bun.lock ]; then bun install --frozen-lockfile; else bun install; fi
-ARG NEXT_PUBLIC_SERVER_URL=http://localhost:3000
+ARG NEXT_PUBLIC_SERVER_URL=http://localhost:5000
 ENV NEXT_PUBLIC_SERVER_URL=${NEXT_PUBLIC_SERVER_URL}
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN bun run --filter web build

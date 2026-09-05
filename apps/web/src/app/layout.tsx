@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import "../index.css";
-import Header from "@/components/header";
+import { Header } from "@/components/header";
 import Providers from "@/components/providers";
 
 const geistSans = Geist({
@@ -28,11 +28,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
         <Providers>
-          <div className="grid grid-rows-[auto_1fr] h-svh">
+          <div className="grid grid-rows-[auto_1fr] h-svh w-full overflow-hidden">
             <Header />
-            {children}
+            <main className="min-h-0 min-w-0">
+              {children}
+            </main>
           </div>
         </Providers>
       </body>

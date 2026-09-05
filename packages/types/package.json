@@ -1,0 +1,13 @@
+{
+  "name": "@Kanflow-Brand/types",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "devDependencies": {
+    "@Kanflow-Brand/config": "workspace:*",
+    "typescript": "^6.0.3"
+  }
+}
