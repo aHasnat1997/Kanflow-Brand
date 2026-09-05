@@ -28,11 +28,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`} suppressHydrationWarning>
         <Providers>
           <div className="grid grid-rows-[auto_1fr] h-svh w-full overflow-hidden">
             <Header />
-            <main className="min-h-0 min-w-0">
+            <main className="min-h-0 min-w-0 overflow-y-auto">
               {children}
             </main>
           </div>
